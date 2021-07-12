@@ -6,6 +6,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
  
 from .models import ZaloMessage
+from .services import ZaloService
 
 import json
 
@@ -35,10 +36,13 @@ def test(request):
 @api_view(['POST'])
 def follow_hook(request):
     if (request.method == 'POST'):
-        datas = request.body
-        print(datas)
-    
-    return HttpResponse("Ok")
+        datas = json.loads(request.body)
+        event = datas.get('event_name', False)
+        if event:
+            result = ZaloService().action_by_event(event, datas)
+            return JsonResponse(result)
+
+    return JsonResponse({'success': 0, 'message': "Undefined Error"})
 
 
 

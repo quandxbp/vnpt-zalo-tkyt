@@ -5,10 +5,15 @@ from django.db.models import fields
 class ZaloUser(models.Model):
 
     name = models.CharField(max_length=200)
-    user_id = models.IntegerField()
+    user_id = models.CharField(max_length=200)
+    address = models.CharField(max_length=200)
+    city = models.CharField(max_length=200)
+    district = models.CharField(max_length=200)
+    phone = models.CharField(max_length=200)
 
     def __str__(self):
         return self.name
+    
 
 class ZaloMessage(models.Model):
 
