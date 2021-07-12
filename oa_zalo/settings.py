@@ -80,11 +80,14 @@ WSGI_APPLICATION = 'oa_zalo.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'd87p85qr6l1n3s',
+        'HOST': 'ec2-3-224-7-166.compute-1.amazonaws.com',
+        'PORT': 5432,
+        'USER': 'cqqchaeqniuxml',
+        'PASSWORD': 'ecc9a287ae7377e27aca31222d00186e2dbc976517b0c5e18fa820063b218122'
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
