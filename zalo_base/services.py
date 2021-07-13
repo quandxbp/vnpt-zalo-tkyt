@@ -56,10 +56,15 @@ class ZaloService:
                 "user_id": user_id
             },
             "message": {
-                "text": "BCĐ PHÒNG CHỐNG DỊCH COVID19 BÌNH PHƯỚC",
+                # "text": "BCĐ PHÒNG CHỐNG DỊCH COVID19 BÌNH PHƯỚC",
                 "attachment": {
                     "type": "template",
                     "payload": {
+                        "elements": [{
+                            "title": "BCĐ PHÒNG CHỐNG DỊCH COVID19 BÌNH PHƯỚC",
+                            "subtitle": "Đang yêu cầu thông tin từ bạn",
+                            "image_url": "https://i.imgur.com/TVVyxKY.png"
+                        }],
                         "buttons": [
                             {
                                 "title": "Tờ khai y tế Online",
