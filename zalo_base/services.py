@@ -60,24 +60,16 @@ class ZaloService:
                 "attachment": {
                     "type": "template",
                     "payload": {
+                        "template_type": "list",
                         "elements": [{
-                            "title": "BCĐ PHÒNG CHỐNG DỊCH COVID19 BÌNH PHƯỚC",
-                            "subtitle": "Đang yêu cầu thông tin từ bạn",
+                            "title": "Đăng ký vào khai báo Online",
+                            "subtitle": "Đăng ký nơi đến Online",
                             "image_url": "https://i.imgur.com/TVVyxKY.png",
                             "default_action": {
                                 "type": "oa.open.url",
                                 "url": f"https://kiemdich.binhphuoc.gov.vn/#/to-khai-y-te/0?zuser_id={user_id}"
                             }
                         }],
-                        # "buttons": [
-                        #     {
-                        #         "title": "Đăng ký nơi đến Online",
-                        #         "payload": {
-                        #             "url": f"https://kiemdich.binhphuoc.gov.vn/#/to-khai-y-te/0?zuser_id={user_id}"
-                        #         },
-                        #         "type": "oa.open.url"
-                        #     }
-                        # ]
                     }
                 }
             }
