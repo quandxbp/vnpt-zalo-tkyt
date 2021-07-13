@@ -56,7 +56,7 @@ class ZaloService:
                 "user_id": user_id
             },
             "message": {
-                # "text": "BCĐ PHÒNG CHỐNG DỊCH COVID19 BÌNH PHƯỚC",
+                "text": "BCĐ PHÒNG CHỐNG DỊCH COVID19 BÌNH PHƯỚC",
                 "attachment": {
                     "type": "template",
                     "payload": {
@@ -87,6 +87,7 @@ class ZaloService:
                 'message': json_res['message']
             }
         else:
+            print(f"{response.status_code} - {response.text}")
             return {
                 'message': f"{response.status_code} - {response.text}",
                 'success': 0
