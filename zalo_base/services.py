@@ -63,17 +63,21 @@ class ZaloService:
                         "elements": [{
                             "title": "BCĐ PHÒNG CHỐNG DỊCH COVID19 BÌNH PHƯỚC",
                             "subtitle": "Đang yêu cầu thông tin từ bạn",
-                            "image_url": "https://i.imgur.com/TVVyxKY.png"
-                        }],
-                        "buttons": [
-                            {
-                                "title": "Tờ khai y tế Online",
-                                "payload": {
-                                    "url": f"https://kiemdich.binhphuoc.gov.vn/#/to-khai-y-te/0?zuser_id={user_id}"
-                                },
-                                "type": "oa.open.url"
+                            "image_url": "https://i.imgur.com/TVVyxKY.png",
+                            "default_action": {
+                                "type": "oa.open.url",
+                                "url": f"https://kiemdich.binhphuoc.gov.vn/#/to-khai-y-te/0?zuser_id={user_id}"
                             }
-                        ]
+                        }],
+                        # "buttons": [
+                        #     {
+                        #         "title": "Đăng ký nơi đến Online",
+                        #         "payload": {
+                        #             "url": f"https://kiemdich.binhphuoc.gov.vn/#/to-khai-y-te/0?zuser_id={user_id}"
+                        #         },
+                        #         "type": "oa.open.url"
+                        #     }
+                        # ]
                     }
                 }
             }
@@ -154,9 +158,21 @@ class ZaloService:
             'zalo_user_id': user_id,
         }
     
+    def store_user_id(self, user_id):
+        is_existed = ZaloUser.objects.filter(user_id=user_id).exists()
+        if not is_existed:
+            new_user = ZaloUser(user_id = user_id)
+            new_user.save()
+        return {
+            'success': 1,
+            'message': "Success",
+            'zalo_user_id': user_id,
+        }
+    
     def action_by_event(self, event_name, datas):
         if event_name == 'follow':
             user_id = datas['follower']['id']
+            self.store_user_id(user_id)
             return self.send_buttons_message(user_id)
         if event_name == 'user_submit_info':
             return self.store_user_info(datas)
