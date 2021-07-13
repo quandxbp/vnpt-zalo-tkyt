@@ -26,5 +26,5 @@ class ZaloMessage(models.Model):
     def __str__(self):
         return self.content
 
-    def parse_message_content(self):
-        print(1)
+    # @classmethod
+    # def insert_history(cls, field1, field2, field3):

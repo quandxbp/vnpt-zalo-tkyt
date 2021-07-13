@@ -107,7 +107,6 @@ class ZaloService:
             'message': "Success",
             'zalo_user_id': user_id,
         }
-
     
     def action_by_event(self, event_name, datas):
         if event_name == 'follow':
@@ -115,6 +114,11 @@ class ZaloService:
             return self.request_get_user_info(user_id)
         if event_name == 'user_submit_info':
             return self.store_user_info(datas)
+    
+    # def send_confirm_message(self, phone):
+    #     def _parse_phone(phone):
+            # if 
+        # existed_user = ZaloUser.objects.get(user_id=user_id)
             
 
     

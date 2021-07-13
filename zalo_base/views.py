@@ -5,7 +5,6 @@ from rest_framework.parsers import JSONParser
 from rest_framework import status
 from rest_framework.decorators import api_view
  
-from .models import ZaloMessage
 from .services import ZaloService
 
 import json
@@ -13,25 +12,24 @@ import json
 def index(request):
     return HttpResponse("Hello, world. Welcome to us.")
 
-@api_view(['GET', 'POST', 'DELETE'])
-def message(request):
-    if request.method == 'POST':
-        data = JSONParser().parse(request)
-        return JsonResponse(data, status=status.HTTP_201_CREATED) 
-    
-    elif request.method == 'DELETE':
-        count = ZaloMessage.objects.all().delete()
-        return JsonResponse({'message': '{} Tutorials were deleted successfully!'.format(count[0])}, status=status.HTTP_204_NO_CONTENT)
-
-@api_view(['GET', 'POST', 'DELETE'])
-def test(request):
+@api_view(['GET'])
+def tkyt(request):
     if (request.method == 'GET'):
-        # for k,v  in request.headers:
-        #     print(item)
-        # print(request.headers)
         print(request.headers)
-        print(request.query_params)
-    return HttpResponse("Ok")
+        return JsonResponse({
+            # "GET": request.GET,
+            # "POST": request.POST,
+            # "COOKIES": request.COOKIES,
+            # "META": request.META,
+            # "FILES": request.FILES,
+            # "method": request.method,
+            "content_params": request.content_params
+        })
+
+    return JsonResponse({
+        'success': 0, 
+        'message': f"Request method {request.method} is not allowed!"
+        })
 
 @api_view(['POST'])
 def follow_hook(request):
@@ -42,7 +40,21 @@ def follow_hook(request):
             result = ZaloService().action_by_event(event, datas)
             return JsonResponse(result)
 
-    return JsonResponse({'success': 0, 'message': "Undefined Error"})
+    return JsonResponse({
+        'success': 0, 
+        'message': f"Request method {request.method} is not allowed!"
+        })
 
+@api_view(['POST'])
+def confirm_destination(request):
+    if (request.method == 'POST'):
+        datas = json.loads(request.body)
+        phone = datas.get('phone', False)
+        if phone:
+            return ZaloService().send_confirm_message(phone)
+    return JsonResponse({
+        'success': 0, 
+        'message': f"Request method {request.method} is not allowed!"
+        })
 
 

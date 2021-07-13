@@ -5,7 +5,6 @@ from . import views
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('message', views.message, name='message'),
-    path('test', views.test, name='test'),
+    path('tkyt', views.tkyt, name='tkyt'),
     path('follow_hook', views.follow_hook, name='follow_hook')
 ]
