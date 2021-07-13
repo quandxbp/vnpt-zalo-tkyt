@@ -1,147 +1,24 @@
 import requests
 from .credentials import ZALO_CRE
 from .models import ZaloUser
+from .zalo_sdk import ZaloSDK
 
 class ZaloService:
 
-    def get_headers(self, content_type=False):
-        headers = {
-            'access_token': ZALO_CRE['access_token']
-        }
-        if content_type: headers.update({'Content-Type': 'application/json'})
-        return headers
-
-    def request_get_user_info(self, user_id):
-        headers = self.get_headers(True)
-        url = f"{ZALO_CRE['base_url']}message"
-
-        body = {
-            "recipient": {
-                "user_id": user_id
-            },
-            "message": {
-                "attachment": {
-                    "type": "template",
-                    "payload": {
-                        "template_type": "request_user_info",
-                        "elements": [{
-                            "title": "BCĐ PHÒNG CHỐNG DỊCH COVID19 BÌNH PHƯỚC",
-                            "subtitle": "Đang yêu cầu thông tin từ bạn",
-                            "image_url": "https://i.imgur.com/TVVyxKY.png"
-                        }]
-                    }
-                }
-            }
-        }
-
-        response = requests.post(url, json=body, headers=headers)
-        if response.ok:
-            json_res = response.json()
-            return {
-                'success': 1 if json_res['error'] > 0 else 0,
-                'message': json_res['message']
-            }
-        else:
-            return {
-                'message': f"{response.status_code} - {response.text}",
-                'success': 0
-            }
-
-    def send_buttons_message(self, user_id):
-        headers = self.get_headers(True)
-        url = f"{ZALO_CRE['base_url']}message"
-
-        body = {
-            "recipient": {
-                "user_id": user_id
-            },
-            "message": {
-                "text": "BCĐ PHÒNG CHỐNG DỊCH COVID19 BÌNH PHƯỚC",
-                "attachment": {
-                    "type": "template",
-                    "payload": {
-                        "template_type": "list",
-                        "elements": [{
-                            "title": "Đăng ký vào khai báo Online",
-                            "subtitle": "Đăng ký nơi đến Online",
-                            "image_url": "https://i.imgur.com/TVVyxKY.png",
-                            "default_action": {
-                                "type": "oa.open.url",
-                                "url": f"https://kiemdich.binhphuoc.gov.vn/#/to-khai-y-te/0?zuser_id={user_id}"
-                            }
-                        }],
-                    }
-                }
-            }
-        }
-
-        response = requests.post(url, json=body, headers=headers)
-        if response.ok:
-            json_res = response.json()
-            return {
-                'success': 1 if json_res['error'] > 0 else 0,
-                'message': json_res['message']
-            }
-        else:
-            print(f"{response.status_code} - {response.text}")
-            return {
-                'message': f"{response.status_code} - {response.text}",
-                'success': 0
-            }
-
-
+    def __init__(self):
+        self.z_sdk = ZaloSDK(ZALO_CRE['access_token'])
     
-    def post_message(self, user_id, message):
-        url = f"{ZALO_CRE['base_url']}message"
-        body = {
-            "recipient": {"user_id": user_id},
-            "message": {"text": message }
-        }
-        response = requests.post(url, body, headers=self.get_header())
-        if response.ok:
-            return {
-                'success': 1 if response.error > 0 else 0,
-                'message': response.message
-            }
-        else:
-            return {
-                'message': f"{response.status_code} - {response.text}",
-                'success': 0
-            }
-
-    def get_user_infor(self, user_id):
-        url = f"{ZALO_CRE['base_url']}/getprofile"
-        params = self.get_header()
-        data = {
-            "user_id": user_id
-        }
-        params.update({
-            'data': data
-        })
-
-        response = requests.get(url, params)
-        return response
-    
-    def store_user_info(self, datas):
-        user_id = datas['sender']['id']
-        address = datas['info']['address']
-        phone = datas['info']['phone']
-        city = datas['info']['city']
-        district = datas['info']['district']
-        name = datas['info']['name']
-
+    def store_user_info(self, user_id, name='', phone=''):
         is_existed = ZaloUser.objects.filter(user_id=user_id).exists()
         if not is_existed:
             new_user = ZaloUser(
                 name = name,
                 user_id = user_id, 
-                address = address, 
-                phone = phone, 
-                city = city, 
-                district = district)
+                phone = phone)
             new_user.save()
         else:
             existed_user = ZaloUser.objects.get(user_id=user_id)
+            existed_user.name = name
             existed_user.phone = phone
             existed_user.save()
         return {
@@ -164,15 +41,44 @@ class ZaloService:
     def action_by_event(self, event_name, datas):
         if event_name == 'follow':
             user_id = datas['follower']['id']
-            self.store_user_id(user_id)
-            return self.send_buttons_message(user_id)
-        if event_name == 'user_submit_info':
-            return self.store_user_info(datas)
+            self.store_user_info(user_id)
+            return self.z_sdk.post_banner_message(user_id)
     
-    # def send_confirm_message(self, phone):
-    #     def _parse_phone(phone):
-            # if 
-        # existed_user = ZaloUser.objects.get(user_id=user_id)
+    def send_confirm_message(self, datas):
+        user_id = datas.get('zuser_id')
+        phone = datas.get('phone')
+        name = datas.get('name')
+        self.store_user_info(user_id, name, phone)
+
+        start_time = datas.get('start_time')
+        # start_location = datas.get('start_location')
+        # dest_location = datas.get('dest_location')
+
+        message = f"""Cảm ơn bạn {name} - {phone} đã khai báo tờ khai Online.
+- Ngày khởi hành: {start_time if start_time else 'Chưa xác định'}
+Hãy đưa thông báo này cho cán bộ tại chốt kiểm soát để xác nhận lại đăng ký."""
+
+        return self.z_sdk.post_message(user_id, message=message)
+    
+    def send_confirm_at_checkpoint(self, phone):
+        is_existed = ZaloUser.objects.filter(phone=phone).exists()
+        if is_existed:
+            user = ZaloUser.objects.get(phone=phone)
+            text = f"""Thành công xác nhận thônt tin tại chốt kiểm soát.
+Hãy nhấn vào nút bên dưới khi đã đến địa điểm của bạn!"""
+            title = "Xác nhận khi vừa tới điểm đến"
+            url = "https://google.com.vn"
+            kwargs = {
+                'text': text,
+                'title': title,
+                'url': url
+            }
+            return self.z_sdk.post_button_message(user.user_id, **kwargs)
+        else:
+            return {
+                'success': 0,
+                'message': f'Not found user by phone number: {phone}'
+            }
             
 
     

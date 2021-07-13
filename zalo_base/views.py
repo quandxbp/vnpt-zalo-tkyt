@@ -13,19 +13,26 @@ def index(request):
     return HttpResponse("Hello, world. Welcome to us.")
 
 @api_view(['GET'])
-def tkyt(request):
+def declare_confirm(request):
+    message = f"Request method {request.method} is not allowed!"
     if (request.method == 'GET'):
-        print(request.headers)
-        return JsonResponse({
-            # "GET": request.GET,
-            # "POST": request.POST,
-            # "COOKIES": request.COOKIES,
-            # "META": request.META,
-            # "FILES": request.FILES,
-            # "method": request.method,
-            "content_params": request.content_params
+        datas = request.GET
+        if datas.get('zuser_id'):
+            result = ZaloService().send_confirm_message(datas)
+            return JsonResponse(result)
+        message = 'Zalo User ID is not provided'
+    return JsonResponse({
+        'success': 0, 
+        'message': message
         })
 
+@api_view(['GET'])
+def checkpoint_confirm(request):
+    if (request.method == 'GET'):
+        datas = request.GET
+        if datas.get('phone'):
+            result = ZaloService().send_confirm_at_checkpoint(datas.get('phone'))
+            return JsonResponse(result)
     return JsonResponse({
         'success': 0, 
         'message': f"Request method {request.method} is not allowed!"
@@ -40,18 +47,6 @@ def follow_hook(request):
             result = ZaloService().action_by_event(event, datas)
             return JsonResponse(result)
 
-    return JsonResponse({
-        'success': 0, 
-        'message': f"Request method {request.method} is not allowed!"
-        })
-
-@api_view(['POST'])
-def confirm_destination(request):
-    if (request.method == 'POST'):
-        datas = json.loads(request.body)
-        phone = datas.get('phone', False)
-        if phone:
-            return ZaloService().send_confirm_message(phone)
     return JsonResponse({
         'success': 0, 
         'message': f"Request method {request.method} is not allowed!"
