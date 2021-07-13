@@ -47,6 +47,46 @@ class ZaloService:
                 'success': 0
             }
 
+    def send_buttons_message(self, user_id):
+        headers = self.get_headers(True)
+        url = f"{ZALO_CRE['base_url']}message"
+
+        body = {
+            "recipient": {
+                "user_id": user_id
+            },
+            "message": {
+                "text": "BCĐ PHÒNG CHỐNG DỊCH COVID19 BÌNH PHƯỚC",
+                "attachment": {
+                    "type": "template",
+                    "payload": {
+                        "buttons": [
+                            {
+                                "title": "Tờ khai y tế Online",
+                                "payload": {
+                                    "url": f"https://kiemdich.binhphuoc.gov.vn/#/to-khai-y-te/0?zuser_id={user_id}"
+                                },
+                                "type": "oa.open.url"
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+
+        response = requests.post(url, json=body, headers=headers)
+        if response.ok:
+            json_res = response.json()
+            return {
+                'success': 1 if json_res['error'] > 0 else 0,
+                'message': json_res['message']
+            }
+        else:
+            return {
+                'message': f"{response.status_code} - {response.text}",
+                'success': 0
+            }
+
 
     
     def post_message(self, user_id, message):
@@ -111,7 +151,7 @@ class ZaloService:
     def action_by_event(self, event_name, datas):
         if event_name == 'follow':
             user_id = datas['follower']['id']
-            return self.request_get_user_info(user_id)
+            return self.send_buttons_message(user_id)
         if event_name == 'user_submit_info':
             return self.store_user_info(datas)
     
