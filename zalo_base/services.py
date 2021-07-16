@@ -116,14 +116,14 @@ Hãy nhấn vào nút bên dưới khi đã đến địa điểm của bạn!""
                 {
                     "title": "Đăng ký tờ khai y tế người dân Online",
                     "payload": {
-                        "url": f"https://kiemdich.binhphuoc.gov.vn/#/to-khai-y-te/0?zuser_id={user_id}"
+                        "url": f"https://kiemdich.binhphuoc.gov.vn/#/to-khai-y-te/0/{user_id}"
                     },
                     "type": "oa.open.url"
                 },
                 {
                     "title": "Đăng ký tờ khai y tế vận tải Online",
                     "payload": {
-                        "url": f"https://kiemdich.binhphuoc.gov.vn/#/to-khai-y-te/0?zuser_id={user_id}"
+                        "url": f"https://kiemdich.binhphuoc.gov.vn/#/to-khai-y-te/0/{user_id}"
                     },
                     "type": "oa.open.url"
                 },

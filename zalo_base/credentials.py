@@ -1,4 +1,4 @@
 ZALO_CRE = {
-    'access_token': "q7ueJCQnd4RUUIL6phQUJjvt8qR6eFWTac0-Ry6Xq12f6H5_k8ZI2VeM5M2wWw4ep1zkQDYZbcB1Q5KvYQYpMCmr2pgVXyWooX08Oeg2rmt_0X9pwvEp1v8-3MV1llOzqWmgIRIcaWN73L5jqwoQPfGCHJI4lAjKnn5XDANTWdZeIarqkFwG5CP5KtEiuujouov-29kpaHtV65jZjuwmADv3NtsQZg4Q_ILaJRYasnlVRmz8cCcwFz1sV4Mq-gz9ndDAFAlRe7tYUcOtjTFJO_zY7ZMhuTjeUMqX-OmumgcNGW",
+    'access_token': "WfjSLEN1MJQCd55UxSPRFeoILrxbq5r7WTzO8eEBCm7hgpiOmV4q9FEjJGJpbaDXxyaNGzR0RM3tncDTbPmGER-5PZ62dMaKjBK4AuAA3ZohZnuDmh1o1CMAUI3bW0z4nDbt9j_p75lBytHSukeAViJVJXlvoYD-ukjJ7_kn9Y3Wlbmuqk0mKBlSIJA1zKmMWFKhBhclSnoTbm8vWh9m6hhiDtgvrtXXqOznS-M20rF_e70twAKdIep-JaZbwZel_yXW79-GBo-NiKC7ZPKqPRY_HrwTdpPdgv57O51iFL3XsL8o",
     'base_url': 'https://openapi.zalo.me/v2.0/oa/'
 }
