@@ -17,14 +17,17 @@
             </div>
             <div class="row">
                 <div class="col-xs-12 col-lg-12 text-center p-5">
+                    <div id="location-info" class="alert alert-info" role="alert">
+                        ● Hãy bật <b>GPS</b> ở trong phần <b>Cài Đặt</b> của thiết bị.
+                    </div>
                     <div id="location-success" class="alert alert-success d-none" role="alert">
-                        Cảm ơn bạn đã cung cấp vị trí hiện tại cho chúng tôi!
+                        ● Cảm ơn bạn đã cung cấp vị trí hiện tại cho chúng tôi!
                     </div>
                     <div id="location-danger" class="alert alert-danger d-none" role="alert">
-                        Bạn cần cho phép ứng dụng cung cấp vị trí hiện tại cho chúng tôi!
+                        ● Bạn cần cho phép ứng dụng cung cấp vị trí hiện tại phầm mềm!
                     </div>
                     <div id="location-warning" class="alert alert-warning d-none" role="alert">
-                        <b>Truy cập vị trí</b>bị từ chối hoặc <b>GPS</b> trên thiết bị của bạn chưa được kích hoạt.<br/>
+                        <b>Truy cập vị trí</b> bị từ chối hoặc <b>GPS</b> trên thiết bị của bạn chưa được kích hoạt.<br/>
                         ● Quay trở lại Zalo và thao tác <b>Xác nhận vị trí</b>.<br/>
                         ● Hãy bật <b>GPS</b> ở trong phần Cài Đặt của thiết bị.
                     </div>
@@ -45,8 +48,10 @@
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function(position) {
                 if(position.coords.latitude == null){
+                    document.getElementById("location-info").classList.add("d-none");
                     document.getElementById("location-warning").classList.remove("d-none");
                 } else {
+                    document.getElementById("location-info").classList.add("d-none");
                     document.getElementById("location-success").classList.remove("d-none");
                     const xhttp = new XMLHttpRequest();
                     var params = { 
@@ -58,17 +63,11 @@
                     xhttp.send();
                 }
             }, function(error) {
+                document.getElementById("location-info").classList.add("d-none");
                 document.getElementById("location-warning").classList.remove("d-none");
-            }, {maximumAge:60000, timeout:3000, enableHighAccuracy:true});
-
-            // navigator.geolocation.watchPosition(function(position) {
-            //     document.getElementById("location-success").classList.remove("d-none");
-            // },
-            // function(error) {
-            //     if (error.code == error.PERMISSION_DENIED)
-            //     document.getElementById("location-danger").classList.remove("d-none");
-            // });
+            }, {enableHighAccuracy : true});
         } else {
+            document.getElementById("location-info").classList.add("d-none");
             document.getElementById("location-danger").classList.remove("d-none");
         }
     </script>
