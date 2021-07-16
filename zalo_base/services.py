@@ -111,7 +111,8 @@ Hãy nhấn vào nút bên dưới khi đã đến địa điểm của bạn!""
     def action_by_event(self, event_name, datas):
         if event_name == 'follow':
             user_id = datas['follower']['id']
-            # self.store_user_info(user_id)
+            url = f"https://kiemdich.binhphuoc.gov.vn/#/to-khai-y-te/0/{user_id}"
+            text = "Đăng ký khai báo Online"
             buttons = [
                 {
                     "title": "Đăng ký tờ khai y tế người dân Online",
@@ -123,19 +124,13 @@ Hãy nhấn vào nút bên dưới khi đã đến địa điểm của bạn!""
                 {
                     "title": "Đăng ký tờ khai y tế vận tải Online",
                     "payload": {
-                        "url": f"https://kiemdich.binhphuoc.gov.vn/#/to-khai-y-te/0/{user_id}"
+                        "url": url
                     },
                     "type": "oa.open.url"
                 },
             ]
-            message = "Đăng ký khai báo Online"
-            return self.z_sdk.post_button_message(user_id, text=message, buttons=buttons)
-            # return self.z_sdk.post_banner_message(
-            #     user_id = user_id,
-            #     title = self.title,
-            #     subtitle = "Đăng ký tờ khai y tế Online",
-            #     url=f"https://kiemdich.binhphuoc.gov.vn/#/to-khai-y-te/0?zuser_id={user_id}"
-            #     )
+
+            return self.z_sdk.post_button_message(user_id, text=text, buttons=buttons)
 
         if event_name == "user_submit_info":
             user_id = datas['sender']['id']

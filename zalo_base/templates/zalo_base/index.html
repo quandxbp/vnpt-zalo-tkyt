@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        
+        <script src="https://zjs.zdn.vn/zalo/Zalo.Extensions.min.js" type="text/javascript"></script>
+    </head>
+
+    <body>
+        <section class="container">
+            <div class="row">
+                <div class="col-xs-12 col-lg-12 text-center bg-light p-5">
+                    <h1 class="mb-3">Đăng ký gói cước tự động - VNPT Bình Phước</h1>
+                </div>
+            </div>
+            <div class="row">
+                <form>
+                    <div class="form-group row">
+                      <label for="staticEmail" class="col-sm-2 col-form-label">Tên đăng nhập</label>
+                      <div class="col-sm-10">
+                        <input type="text" readonly class="form-control-plaintext" id="username" value="email@example.com">
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label for="inputPassword" class="col-sm-2 col-form-label">Mật khẩu</label>
+                      <div class="col-sm-10">
+                        <input type="password" class="form-control" id="password" placeholder="Password">
+                      </div>
+                    </div>
+                    <div class="form-group row text-center">
+                        <button type="submit" class="btn btn-primary mb-2">Đăng nhập</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </body>
+
+    <script type="text/javascript">
+        function getContext() {
+            ZaloExtensions.getContext({"oaId": '1852635313062286479'},
+            function success(thread_context) {
+                // {
+                // "userId": USER_ID
+                // }
+
+                alert(JSON.stringify(thread_context));
+            },
+            function error(err) {
+                alert(JSON.stringify(err));
+            });
+        }
+
+        getContext()
+
+        // var x = document.getElementById("demo");
+        // function getLocation() {
+        //     if (navigator.geolocation) {
+        //         navigator.geolocation.getCurrentPosition(showPosition);
+        //     } else {
+        //         x.innerHTML = "Geolocation is not supported by this browser.";
+        //     }
+        // }
+
+        // function showPosition(position) {
+        //     x.innerHTML = "Latitude: " + position.coords.latitude +
+        //     "<br>Longitude: " + position.coords.longitude;
+        // }
+
+    </script>
+    
+</html>

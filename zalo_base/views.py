@@ -1,4 +1,5 @@
 from django.http import HttpResponse
+from django.template import loader
 
 from django.http.response import JsonResponse
 from rest_framework.parsers import JSONParser 
@@ -10,7 +11,9 @@ from .services import ZaloService
 import json
 
 def index(request):
-    return HttpResponse("Hello, world. Welcome to us.")
+    template = loader.get_template('zalo_base/index.html')
+    context = {}
+    return HttpResponse(template.render(context, request))
 
 @api_view(['GET'])
 def declare_confirm(request):

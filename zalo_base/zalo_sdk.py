@@ -50,6 +50,11 @@ class ZaloSDK:
                 "attachment": {
                     "type": "template",
                     "payload": {
+                        "template_type": "media",
+                        "elements": [{
+                            "media_type": "image",
+                            "url": "https://i.imgur.com/TVVyxKY.png",
+                        }],
                         "buttons": kwargs.get('buttons') if kwargs.get('buttons') else 
                         [
                             {
@@ -80,7 +85,8 @@ class ZaloSDK:
                     "type": "template",
                     "payload": {
                         "template_type": "list",
-                        "elements": [{
+                        "elements": kwargs.get('elements') if kwargs.get('elements') else 
+                        [{
                             "title": kwargs.get('title', 'Chưa xác định'),
                             "subtitle": kwargs.get('subtitle', 'Chưa xác định'),
                             "image_url": kwargs.get('image_url', 'https://i.imgur.com/TVVyxKY.png'),
