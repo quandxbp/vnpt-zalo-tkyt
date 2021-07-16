@@ -81,11 +81,11 @@ WSGI_APPLICATION = 'oa_zalo.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'd87p85qr6l1n3s',
-        'HOST': 'ec2-3-224-7-166.compute-1.amazonaws.com',
+        'NAME': 'd142rmb2vsv17c',
+        'HOST': 'ec2-34-233-192-238.compute-1.amazonaws.com',
         'PORT': 5432,
-        'USER': 'cqqchaeqniuxml',
-        'PASSWORD': 'ecc9a287ae7377e27aca31222d00186e2dbc976517b0c5e18fa820063b218122'
+        'USER': 'lyccxuqmfemsza',
+        'PASSWORD': '1ee4b4b6bc77ee401ca9374cccd57719e9eca3b3658d6ba0dc2d3ef709d8dff5'
     }
 }
 

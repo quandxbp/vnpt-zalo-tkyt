@@ -18,7 +18,7 @@ def declare_confirm(request):
     if (request.method == 'GET'):
         datas = request.GET
         if datas.get('zuser_id'):
-            result = ZaloService().send_confirm_message(datas)
+            result = ZaloService().send_confirm_message(datas.get('zuser_id') ,datas)
             return JsonResponse(result)
         message = 'Zalo User ID is not provided'
     return JsonResponse({

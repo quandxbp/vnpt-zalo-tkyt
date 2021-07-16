@@ -40,7 +40,7 @@ class ZaloSDK:
 
     def post_button_message(self, user_id, **kwargs):
         url = f"{self.base_url}/message"
-
+        print(url)
         body = {
             "recipient": {
                 "user_id": user_id
@@ -50,7 +50,8 @@ class ZaloSDK:
                 "attachment": {
                     "type": "template",
                     "payload": {
-                        "buttons": [
+                        "buttons": kwargs.get('buttons') if kwargs.get('buttons') else 
+                        [
                             {
                                 "title": kwargs.get('title', "Mở đường dẫn"),
                                 "payload": {
@@ -69,7 +70,6 @@ class ZaloSDK:
 
     def post_banner_message(self, user_id, **kwargs):
         url = f"{self.base_url}/message"
-# "https://i.imgur.com/TVVyxKY.png"
         body = {
             "recipient": {
                 "user_id": user_id
@@ -89,6 +89,55 @@ class ZaloSDK:
                                 "url": kwargs.get('url', f"https://kiemdich.binhphuoc.gov.vn/#/to-khai-y-te/0?zuser_id={user_id}")
                             }
                         }],
+                    }
+                }
+            }
+        }
+
+        response = requests.post(url, json=body, headers=self.headers)
+        return self._process_response(response)
+    
+    def request_user_info(self, user_id, **kwargs):
+        url = f"{self.base_url}/message"
+        body = {
+            "recipient": {
+                "user_id": user_id
+            },
+            "message": {
+                "attachment": {
+                    "type": "template",
+                    "payload": {
+                        "template_type": "request_user_info",
+                        "elements": [{
+                            "title": kwargs.get('title', 'Chưa xác định'),
+                            "subtitle": "Đang yêu cầu thông tin từ bạn",
+                            "image_url": kwargs.get('image_url', 'https://i.imgur.com/TVVyxKY.png'),
+                        }]
+                    }
+                }
+            }
+        }
+
+        response = requests.post(url, json=body, headers=self.headers)
+        return self._process_response(response)
+
+    def send_attachment_message(self, user_id, **kwargs):
+        url = f"{self.base_url}/message"
+
+        body = {
+            "recipient": {
+                "user_id": user_id
+            },
+            "message": {
+                "text": kwargs.get('text',"QR Code thông tin cá nhân"),
+                "attachment": {
+                    "type": "template",
+                    "payload": {
+                        "template_type": "media",
+                        "elements": [{
+                            "media_type": "image",
+                            "url": kwargs.get('url', "https://4js.com/online_documentation/fjs-gst-2.50.02-manual-html/Images/grw_qr_code_example_width_3cm.jpg")
+                        }]
                     }
                 }
             }
