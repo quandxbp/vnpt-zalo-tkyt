@@ -164,14 +164,14 @@ Hãy nhấn vào nút bên dưới khi đã đến địa điểm của bạn!""
                 text = "Hãy chọn tờ khai y tế phù hợp với bạn"
                 buttons = [
                     {
-                        "title": "Đăng ký tờ khai y tế người dân Online",
+                        "title": "Đăng ký tờ khai y tế dành cho người dân",
                         "payload": {
                             "url": f"https://kiemdich.binhphuoc.gov.vn/#/to-khai-y-te/0/{user_id}"
                         },
                         "type": "oa.open.url"
                     },
                     {
-                        "title": "Đăng ký tờ khai y tế vận tải Online",
+                        "title": "Đăng ký tờ khai y tế dành cho tài xế",
                         "payload": {
                             "url": f"https://kiemdich.binhphuoc.gov.vn/#/to-khai-y-te/0/{user_id}"
                         },
