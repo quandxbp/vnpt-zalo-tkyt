@@ -109,7 +109,6 @@ Hãy nhấn vào nút bên dưới khi đã đến địa điểm của bạn!""
 
     
     def action_by_event(self, event_name, datas):
-        print(datas)
         if event_name == 'follow':
             user_id = datas['follower']['id']
             # text = "Đăng ký khai báo Online"
@@ -127,14 +126,7 @@ Hãy nhấn vào nút bên dưới khi đã đến địa điểm của bạn!""
                         "url": f"https://kiemdich.binhphuoc.gov.vn/#/to-khai-y-te/0/{user_id}"
                     },
                     "type": "oa.open.url"
-                },
-                # {
-                #     "title": "Xác nhận đã đến",
-                #     "payload": {
-                #         "url": f"{user_id}"
-                #     },
-                #     "type": "oa.open.url"
-                # },
+                }
             ]
 
             return self.z_sdk.post_button_message(user_id, buttons=buttons)
@@ -145,6 +137,39 @@ Hãy nhấn vào nút bên dưới khi đã đến địa điểm của bạn!""
             # self.store_user_info(user_id, **info)
             # TODO: Get QR code from TKYT server
             return self.z_sdk.send_attachment_message(user_id, title=self.title)
+
+        if event_name == "oa_send_text":
+            user_id = datas['recipient']['id']
+            message = datas['message']['text']
+            if "#xacnhandaden" in message:
+                buttons = [
+                    {
+                        "title": "Xác nhận vị trí",
+                        "payload": {
+                            "url": f"https://kiemdich.binhphuoc.gov.vn/#/to-khai-y-te/0/{user_id}"
+                        },
+                        "type": "oa.open.url"
+                    }
+                ]
+                return self.z_sdk.post_button_message(user_id, buttons=buttons)
+            if "#khaibaoonline" in message:
+                buttons = [
+                    {
+                        "title": "Đăng ký tờ khai y tế người dân Online",
+                        "payload": {
+                            "url": f"https://kiemdich.binhphuoc.gov.vn/#/to-khai-y-te/0/{user_id}"
+                        },
+                        "type": "oa.open.url"
+                    },
+                    {
+                        "title": "Đăng ký tờ khai y tế vận tải Online",
+                        "payload": {
+                            "url": f"https://kiemdich.binhphuoc.gov.vn/#/to-khai-y-te/0/{user_id}"
+                        },
+                        "type": "oa.open.url"
+                    }
+                ]
+                return self.z_sdk.post_button_message(user_id, buttons=buttons)
         
         if event_name == "user_send_text":
             user_id = datas['sender']['id']
