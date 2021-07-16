@@ -148,7 +148,7 @@ Hãy nhấn vào nút bên dưới khi đã đến địa điểm của bạn!""
         if event_name == "oa_send_text":
             user_id = datas['recipient']['id']
             message = datas['message']['text']
-            if "#xacnhandaden" in message:
+            if "#xacnhanvitri" in message:
                 text = "Xác nhận vị trí hiện tại của bạn"
                 buttons = [
                     {
