@@ -39,21 +39,35 @@
     </body>
 
     <script type="text/javascript">
-        function getContext() {
-            ZaloExtensions.getContext({"oaId": '1852635313062286479'},
-            function success(thread_context) {
-                // {
-                // "userId": USER_ID
-                // }
-
-                alert(JSON.stringify(thread_context));
-            },
-            function error(err) {
-                alert(JSON.stringify(err));
-            });
+        function func(n) {
+            var e = document.cookie;
+            alert(document.cookie);
+            if (e && (e = e.split("; ")) && e.length > 0)
+                for (var o = n.length + 1, t = e.length - 1; t >= 0; t--) {
+                    var r = e[t];
+                    alert(r.replace(/["']/g, ""));
+                    if (r && 0 === r.indexOf(n) && (r = r.substring(o, r.length))) return (r = r.replace(/["']/g, ""));
+                }
+            return null;
         }
 
-        getContext()
+        alert(func("zoanid"));
+        
+        // function getContext() {
+        //     ZaloExtensions.getContext({"oaId": '1852635313062286479'},
+        //     function success(thread_context) {
+        //         // {
+        //         // "userId": USER_ID
+        //         // }
+
+        //         alert(JSON.stringify(thread_context));
+        //     },
+        //     function error(err) {
+        //         alert(JSON.stringify(err));
+        //     });
+        // }
+
+        // getContext()
 
         // var x = document.getElementById("demo");
         // function getLocation() {

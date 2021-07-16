@@ -109,10 +109,10 @@ Hãy nhấn vào nút bên dưới khi đã đến địa điểm của bạn!""
 
     
     def action_by_event(self, event_name, datas):
+        print(datas)
         if event_name == 'follow':
             user_id = datas['follower']['id']
-            url = f"https://kiemdich.binhphuoc.gov.vn/#/to-khai-y-te/0/{user_id}"
-            text = "Đăng ký khai báo Online"
+            # text = "Đăng ký khai báo Online"
             buttons = [
                 {
                     "title": "Đăng ký tờ khai y tế người dân Online",
@@ -124,14 +124,21 @@ Hãy nhấn vào nút bên dưới khi đã đến địa điểm của bạn!""
                 {
                     "title": "Đăng ký tờ khai y tế vận tải Online",
                     "payload": {
-                        "url": url
+                        "url": f"https://kiemdich.binhphuoc.gov.vn/#/to-khai-y-te/0/{user_id}"
                     },
                     "type": "oa.open.url"
                 },
+                # {
+                #     "title": "Xác nhận đã đến",
+                #     "payload": {
+                #         "url": f"{user_id}"
+                #     },
+                #     "type": "oa.open.url"
+                # },
             ]
 
-            return self.z_sdk.post_button_message(user_id, text=text, buttons=buttons)
-
+            return self.z_sdk.post_button_message(user_id, buttons=buttons)
+        
         if event_name == "user_submit_info":
             user_id = datas['sender']['id']
             info = datas['info']
@@ -142,8 +149,11 @@ Hãy nhấn vào nút bên dưới khi đã đến địa điểm của bạn!""
         if event_name == "user_send_text":
             user_id = datas['sender']['id']
             message = datas['message']['text']
+            
             if "#dangkykiemsoat" in message:
                 pass
+            if "#xacnhandaden" in message:
+                return self.z_sdk.post_message(user_id, f"Chào mừng đã đến nơi {user_id}")
             if 'user_info' in message:
                 return self.send_checker_confirm(user_id, message)
 

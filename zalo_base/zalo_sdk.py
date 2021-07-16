@@ -84,8 +84,8 @@ class ZaloSDK:
                 "attachment": {
                     "type": "template",
                     "payload": {
-                        "template_type": "list",
-                        "elements": kwargs.get('elements') if kwargs.get('elements') else 
+                        # "template_type": "list",
+                        # "elements": kwargs.get('elements') if kwargs.get('elements') else 
                         [{
                             "title": kwargs.get('title', 'Chưa xác định'),
                             "subtitle": kwargs.get('subtitle', 'Chưa xác định'),
