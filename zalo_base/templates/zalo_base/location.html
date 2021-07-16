@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        
+    </head>
+
+    <body>
+        <section class="container">
+            <div class="row">
+                <div class="col-xs-12 col-lg-12 text-center bg-light p-5">
+                    <h1 class="mb-3">Cung cấp điểm đến</h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-lg-12 text-center mt-5">
+                    <div id="location-success" class="alert alert-success d-none" role="alert">
+                        Cảm ơn bạn đã cung cấp vị trí hiện tại cho chúng tôi!
+                    </div>
+                    <div id="location-fail" class="alert alert-succes d-none" role="alert">
+                        Bạn cần cho phép ứng dụng cung cấp vị trí hiện tại cho chúng tôi!
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-lg-12 text-center mt-5">
+                    <div class="alert alert-light" role="alert">
+                        Powered by ✩ VNPT Bình Phước ✩
+                    </div>
+                </div>
+            </div>
+        </section>
+    </body>
+
+    <script>
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                document.getElementById("location-success").classList.remove("d-none");
+                const xhttp = new XMLHttpRequest();
+                var params = { 
+                    'zuser_id': "{{ zuser_id }}",
+                    'latitude': position.coords.latitude,
+                    'longitude': position.coords.longitude
+                };
+                xhttp.open("GET", `/location_confirm?zuser_id=${params['zuser_id']}&latitude=${params['latitude']}&longitude=${params['longitude']}`);
+                xhttp.send();
+            }, function() {
+                document.getElementById("location-fail").classList.remove("d-none");
+            });
+        } else {
+            document.getElementById("location-fail").classList.remove("d-none");
+        }
+    </script>
+
+</html>

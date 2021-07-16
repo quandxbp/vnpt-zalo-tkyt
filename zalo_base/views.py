@@ -15,6 +15,27 @@ def index(request):
     context = {}
     return HttpResponse(template.render(context, request))
 
+def location(request, zuser_id):
+    template = loader.get_template('zalo_base/location.html')
+    context = {
+        'zuser_id': zuser_id
+    }
+    return HttpResponse(template.render(context, request))
+
+@api_view(['GET'])
+def location_confirm(request):
+    message = f"Request method {request.method} is not allowed!"
+    if (request.method == 'GET'):
+        datas = request.GET
+        if datas.get('zuser_id'):
+            result = ZaloService().send_confirm_location_message(datas.get('zuser_id') ,datas)
+            return JsonResponse(result)
+        message = 'Zalo User ID is not provided'
+    return JsonResponse({
+        'success': 0, 
+        'message': message
+        })
+
 @api_view(['GET'])
 def declare_confirm(request):
     message = f"Request method {request.method} is not allowed!"
@@ -46,7 +67,6 @@ def follow_hook(request):
     if (request.method == 'POST'):
         try:
             datas = json.loads(request.body)
-            print(datas)
             event = datas.get('event_name', False)
             if event:
                 result = ZaloService().action_by_event(event, datas)

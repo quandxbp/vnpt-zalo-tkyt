@@ -63,6 +63,14 @@ class ZaloService:
 Hãy đưa thông báo này cho cán bộ tại chốt kiểm soát để xác nhận lại đăng ký."""
 
         return self.z_sdk.post_message(user_id, message=message)
+
+    def send_confirm_location_message(self, user_id, datas):
+        longitude = datas['longitude']
+        latitude = datas['latitude']
+        location = f"https://www.google.com/maps/@{latitude},{longitude},15z"
+        message = f"""Cảm ơn đã chia sẻ vị trí hiện tại của bạn.
+- Vị trí xác định: {location}"""
+        return self.z_sdk.post_message(user_id, message=message)
     
     def send_confirm_at_checkpoint(self, phone):
         is_existed = ZaloUser.objects.filter(phone=phone).exists()
@@ -135,24 +143,25 @@ Hãy nhấn vào nút bên dưới khi đã đến địa điểm của bạn!""
             user_id = datas['sender']['id']
             info = datas['info']
             # self.store_user_info(user_id, **info)
-            # TODO: Get QR code from TKYT server
             return self.z_sdk.send_attachment_message(user_id, title=self.title)
 
         if event_name == "oa_send_text":
             user_id = datas['recipient']['id']
             message = datas['message']['text']
             if "#xacnhandaden" in message:
+                text = "Xác nhận vị trí hiện tại của bạn"
                 buttons = [
                     {
-                        "title": "Xác nhận vị trí",
+                        "title": "Vị trí hiện tại",
                         "payload": {
-                            "url": f"https://kiemdich.binhphuoc.gov.vn/#/to-khai-y-te/0/{user_id}"
+                            "url": f"https://vnptbp-services.herokuapp.com/location/{user_id}"
                         },
                         "type": "oa.open.url"
                     }
                 ]
-                return self.z_sdk.post_button_message(user_id, buttons=buttons)
+                return self.z_sdk.post_button_message(user_id, text=text, buttons=buttons)
             if "#khaibaoonline" in message:
+                text = "Hãy chọn tờ khai y tế phù hợp với bạn"
                 buttons = [
                     {
                         "title": "Đăng ký tờ khai y tế người dân Online",
@@ -169,7 +178,7 @@ Hãy nhấn vào nút bên dưới khi đã đến địa điểm của bạn!""
                         "type": "oa.open.url"
                     }
                 ]
-                return self.z_sdk.post_button_message(user_id, buttons=buttons)
+                return self.z_sdk.post_button_message(user_id, text=text, buttons=buttons)
         
         if event_name == "user_send_text":
             user_id = datas['sender']['id']
@@ -177,8 +186,8 @@ Hãy nhấn vào nút bên dưới khi đã đến địa điểm của bạn!""
             
             if "#dangkykiemsoat" in message:
                 pass
-            if "#xacnhandaden" in message:
-                return self.z_sdk.post_message(user_id, f"Chào mừng đã đến nơi {user_id}")
+            # if "#xacnhandaden" in message:
+            #     return self.z_sdk.post_message(user_id, f"Chào mừng đã đến nơi {user_id}")
             if 'user_info' in message:
                 return self.send_checker_confirm(user_id, message)
 

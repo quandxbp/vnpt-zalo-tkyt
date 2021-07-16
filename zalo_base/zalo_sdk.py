@@ -50,11 +50,11 @@ class ZaloSDK:
                 "attachment": {
                     "type": "template",
                     "payload": {
-                        "template_type": "media",
-                        "elements": [{
-                            "media_type": "image",
-                            "url": "https://i.imgur.com/TVVyxKY.png",
-                        }],
+                        # "template_type": "media",
+                        # "elements": [{
+                        #     "media_type": "image",
+                        #     "url": "https://i.imgur.com/TVVyxKY.png",
+                        # }],
                         "buttons": kwargs.get('buttons') if kwargs.get('buttons') else 
                         [
                             {
