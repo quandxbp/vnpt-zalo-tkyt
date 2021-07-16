@@ -44,11 +44,18 @@ def checkpoint_confirm(request):
 @api_view(['POST'])
 def follow_hook(request):
     if (request.method == 'POST'):
-        datas = json.loads(request.body)
-        event = datas.get('event_name', False)
-        if event:
-            result = ZaloService().action_by_event(event, datas)
-            return JsonResponse(result)
+        try:
+            datas = json.loads(request.body)
+            print(datas)
+            event = datas.get('event_name', False)
+            if event:
+                result = ZaloService().action_by_event(event, datas)
+                return JsonResponse(result)
+        except Exception as err:
+            return JsonResponse({
+                'success': 0, 
+                'message': f"Internal Error: {err}"
+            })
 
     return JsonResponse({
         'success': 0, 
