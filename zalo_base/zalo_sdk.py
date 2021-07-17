@@ -80,16 +80,16 @@ class ZaloSDK:
                 "user_id": user_id
             },
             "message": {
-                "text": kwargs.get('text', ' '),
+                # "text": kwargs.get('text', ' '),
                 "attachment": {
                     "type": "template",
                     "payload": {
-                        # "template_type": "list",
-                        # "elements": kwargs.get('elements') if kwargs.get('elements') else 
+                        "template_type": "list",
+                        "elements": kwargs.get('elements') if kwargs.get('elements') else 
                         [{
                             "title": kwargs.get('title', 'Chưa xác định'),
                             "subtitle": kwargs.get('subtitle', 'Chưa xác định'),
-                            "image_url": kwargs.get('image_url', 'https://i.imgur.com/TVVyxKY.png'),
+                            "image_url": kwargs.get('image_url', 'https://i.imgur.com/W1NlAeY.jpg'),
                             "default_action": {
                                 "type": "oa.open.url",
                                 "url": kwargs.get('url', f"https://kiemdich.binhphuoc.gov.vn/#/to-khai-y-te/0?zuser_id={user_id}")

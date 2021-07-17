@@ -67,7 +67,7 @@ Hãy đưa thông báo này cho cán bộ tại chốt kiểm soát để xác n
     def send_confirm_location_message(self, user_id, datas):
         longitude = datas['longitude']
         latitude = datas['latitude']
-        location = f"https://www.google.com/maps/@{latitude},{longitude},15z"
+        location = f"https://www.google.com/maps?q={latitude},{longitude}&z=14&t=m&mapclient=embed"
         message = f"""Cảm ơn đã chia sẻ vị trí hiện tại của bạn.
 - Vị trí xác định: {location}"""
         return self.z_sdk.post_message(user_id, message=message)
@@ -149,17 +149,10 @@ Hãy nhấn vào nút bên dưới khi đã đến địa điểm của bạn!""
             user_id = datas['recipient']['id']
             message = datas['message']['text']
             if "#xacnhanvitri" in message:
-                text = "Xác nhận vị trí hiện tại của bạn"
-                buttons = [
-                    {
-                        "title": "Vị trí hiện tại",
-                        "payload": {
-                            "url": f"https://vnptbp-services.herokuapp.com/location/{user_id}"
-                        },
-                        "type": "oa.open.url"
-                    }
-                ]
-                return self.z_sdk.post_button_message(user_id, text=text, buttons=buttons)
+                title = "Xác nhận vị trí hiện tại của bạn"
+                subtitle = "Cung cấp vị trí hiện tại của bạn cho BCĐ phòng chống dịch Covid-19 tỉnh Bình Phước"
+                url = f"https://vnptbp-services.herokuapp.com/location/{user_id}"
+                return self.z_sdk.post_banner_message(user_id, title=title, subtitle=subtitle, url=url)
             if "#khaibaoonline" in message:
                 text = "Hãy chọn tờ khai y tế phù hợp với bạn"
                 buttons = [
