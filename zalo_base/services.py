@@ -8,6 +8,7 @@ class ZaloService:
     def __init__(self):
         self.z_sdk = ZaloSDK(ZALO_CRE['access_token'])
         self.title = "BCĐ phòng chống dịch Covid19 Bình Phước"
+        self.default_qr = "https://4js.com/online_documentation/fjs-gst-2.50.02-manual-html/Images/grw_qr_code_example_width_3cm.jpg"
     
     def store_user_info(self, user_id, **info):
         is_existed = ZaloUser.objects.filter(user_id=user_id).exists()
@@ -50,9 +51,9 @@ class ZaloService:
         }
     
     def send_confirm_message(self, user_id, datas):
-        phone = datas.get('phone')
-        name = datas.get('name')
-        qr_image = datas.get('qr_image')
+        phone = datas.get('phone', "Chưa xác định")
+        name = datas.get('name', "Chưa xác định")
+        qr_image = datas.get('qr_image', self.default_qr)
 
         text = f"""Cảm ơn bạn {name} - {phone} đã khai báo tờ khai Online.
 Đây là mã QR Code thông tin đăng ký của bạn.
