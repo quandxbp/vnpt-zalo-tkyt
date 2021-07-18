@@ -22,6 +22,23 @@ def location(request, zuser_id):
     }
     return HttpResponse(template.render(context, request))
 
+@api_view(['POST'])
+def message(request):
+    message = f"Request method {request.method} is not allowed!"
+    if (request.method == 'POST'):
+        datas = json.loads(request.body)
+        if datas.get('zuser_id'):
+            result = ZaloService().post_message(datas.get('zuser_id') ,datas.get('message', False))
+            return JsonResponse(result)
+        elif datas.get('messages'):
+            result = ZaloService().post_multiple_message(datas.get('messages'))
+            return JsonResponse(result)
+        message = 'Zalo User ID is not provided'
+    return JsonResponse({
+        'success': 0, 
+        'message': message
+        })
+
 @api_view(['GET'])
 def location_confirm(request):
     message = f"Request method {request.method} is not allowed!"

@@ -1,3 +1,4 @@
+from django.http import response
 import requests
 from .credentials import ZALO_CRE
 from .models import ZaloUser
@@ -9,6 +10,23 @@ class ZaloService:
         self.z_sdk = ZaloSDK(ZALO_CRE['access_token'])
         self.title = "BCĐ phòng chống dịch Covid19 Bình Phước"
         self.default_qr = "https://4js.com/online_documentation/fjs-gst-2.50.02-manual-html/Images/grw_qr_code_example_width_3cm.jpg"
+
+    def post_message(self, user_id, message):
+        return self.z_sdk.post_message(user_id, message=message)
+
+    def post_multiple_message(self, messages):
+        for m in messages:
+            response = self.z_sdk.post_message(m.get('zuser_id'), message=m.get('message'))
+            print(response)
+            if not response.get('success'):
+                return {
+                    'success': 0,
+                    "message": f"Error for user_id = {m.get('zuser_id')} and message = {m.get('message')}"
+                }
+        return {
+            'success': 1,
+            'message': "Success"
+        }
 
     def get_user_detail_message(self, info):
         address = info.get('address', 'Chưa xác định')
@@ -154,6 +172,8 @@ Hãy nhấn vào nút bên dưới khi đã đến địa điểm của bạn!""
             message = datas['message']['text']
             
             if 'TKVT_' in message:
-                return self.send_checker_confirm(user_id, message)
+                pass
+                # self.scan_qr_code_for_checker(message)
+                # return self.send_checker_confirm(user_id, message)
 
     

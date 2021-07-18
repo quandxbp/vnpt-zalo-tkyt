@@ -19,7 +19,7 @@ class ZaloSDK:
         if response.ok:
             json_res = response.json()
             return {
-                'success': 0 if json_res['error'] > 0 else 1,
+                'success': 0 if json_res['error'] < 0 else 1,
                 'message': json_res['message'],
                 'res_data': json_res,
             }
