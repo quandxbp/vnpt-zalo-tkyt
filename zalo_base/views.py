@@ -22,6 +22,25 @@ def location(request, zuser_id):
     }
     return HttpResponse(template.render(context, request))
 
+@api_view(['GET','POST'])
+def site(request):
+    message = f"Request method {request.method} is not allowed!"
+    if (request.method == 'POST'):
+        datas = json.loads(request.body)
+        if datas.get('site'):
+            result = ZaloService().set_site(datas.get('site'))
+            return JsonResponse(result)
+    elif (request.method == 'GET'):
+        result = ZaloService().get_site()
+        return JsonResponse({
+            'production_site': "https://kiemdich.binhphuoc.gov.vn",
+            'current_site': result,
+        })
+    return JsonResponse({
+        'success': 0, 
+        'message': message
+        })
+
 @api_view(['POST'])
 def message(request):
     message = f"Request method {request.method} is not allowed!"

@@ -1,15 +1,30 @@
-from django.http import response
-import requests
 from .credentials import ZALO_CRE
 from .models import ZaloUser
 from .zalo_sdk import ZaloSDK
 
+from .utils import *
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+CONSTANT_SITE = "https://kiemdich.binhphuoc.gov.vn"
+
 class ZaloService:
 
     def __init__(self):
+        self.site = self.get_site()
         self.z_sdk = ZaloSDK(ZALO_CRE['access_token'])
         self.title = "BCĐ phòng chống dịch Covid19 Bình Phước"
         self.default_qr = "https://4js.com/online_documentation/fjs-gst-2.50.02-manual-html/Images/grw_qr_code_example_width_3cm.jpg"
+
+    def get_site(self):
+        data = read_json(BASE_DIR / 'config.json')
+        return data.get('site', CONSTANT_SITE)
+    
+    def set_site(self, site):
+        data = read_json(BASE_DIR / 'config.json')
+        data['site'] = site
+        store_json(BASE_DIR / 'config.json', data)
+        return data
 
     def post_message(self, user_id, message):
         return self.z_sdk.post_message(user_id, message=message)
@@ -45,14 +60,14 @@ class ZaloService:
             {
                 "title": "Đăng ký tờ khai y tế dành cho người dân",
                 "payload": {
-                    "url": f"https://kiemdich.binhphuoc.gov.vn/#/to-khai-y-te/0/{user_id}"
+                    "url": f"{self.site}/#/to-khai-y-te/0/{user_id}"
                 },
                 "type": "oa.open.url"
             },
             {
                 "title": "Đăng ký tờ khai y tế dành cho tài xế",
                 "payload": {
-                    "url": f"https://kiemdich.binhphuoc.gov.vn/#/to-khai-y-te/0/{user_id}"
+                    "url": f"{self.site}/#/to-khai-y-te/0/{user_id}"
                 },
                 "type": "oa.open.url"
             }
