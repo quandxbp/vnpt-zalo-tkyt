@@ -36,11 +36,11 @@ def location_confirm(request):
         'message': message
         })
 
-@api_view(['GET'])
+@api_view(['POST'])
 def declare_confirm(request):
     message = f"Request method {request.method} is not allowed!"
-    if (request.method == 'GET'):
-        datas = request.GET
+    if (request.method == 'POST'):
+        datas = json.loads(request.body)
         if datas.get('zuser_id'):
             result = ZaloService().send_confirm_message(datas.get('zuser_id') ,datas)
             return JsonResponse(result)

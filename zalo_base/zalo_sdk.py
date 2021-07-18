@@ -40,7 +40,6 @@ class ZaloSDK:
 
     def post_button_message(self, user_id, **kwargs):
         url = f"{self.base_url}/message"
-        print(url)
         body = {
             "recipient": {
                 "user_id": user_id
@@ -148,6 +147,8 @@ class ZaloSDK:
                 }
             }
         }
+
+        print(body)
 
         response = requests.post(url, json=body, headers=self.headers)
         return self._process_response(response)
