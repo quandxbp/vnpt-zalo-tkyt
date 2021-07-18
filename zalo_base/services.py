@@ -9,46 +9,36 @@ class ZaloService:
         self.z_sdk = ZaloSDK(ZALO_CRE['access_token'])
         self.title = "BCĐ phòng chống dịch Covid19 Bình Phước"
         self.default_qr = "https://4js.com/online_documentation/fjs-gst-2.50.02-manual-html/Images/grw_qr_code_example_width_3cm.jpg"
-    
-    def store_user_info(self, user_id, **info):
-        is_existed = ZaloUser.objects.filter(user_id=user_id).exists()
-        if not is_existed:
-            new_user = ZaloUser(
-                user_id = user_id, 
-                name = info.get('name', False),
-                phone = info.get('phone', False),
-                city = info.get('city', False),
-                district = info.get('district', False),
-                address = info.get('address', False),
-                ward = info.get('ward', False),
-                )
-            new_user.save()
-        else:
-            existed_user = ZaloUser.objects.get(user_id=user_id)
-            existed_user.name = info.get('name', False)
-            existed_user.phone = info.get('phone', False)
-            existed_user.city = info.get('phone', False)
-            existed_user.district = info.get('district', False)
-            existed_user.address = info.get('address', False)
-            existed_user.ward = info.get('ward', False)
 
-            existed_user.save()
-        return {
-            'success': 1,
-            'message': "Success",
-            'zalo_user_id': user_id,
-        }
+    def get_user_detail_message(self, info):
+        address = info.get('address', 'Chưa xác định')
+        if info.get('district'):
+            address = f"{address}, {info.get('district')}"
+        if info.get('city'):
+            address = f"{address}, {info.get('city')}"
+        message = f"""Cảm ơn bạn đã cung cấp thông tin để đăng ký cấp quản lý
+- Họ và tên: {info.get('name', "Chưa xác định")}
+- Số điện thoại: {info.get('phone', 'Chưa xác định')}
+- Địa chỉ: {address}"""         
+        return message
     
-    def store_user_id(self, user_id):
-        is_existed = ZaloUser.objects.filter(user_id=user_id).exists()
-        if not is_existed:
-            new_user = ZaloUser(user_id = user_id)
-            new_user.save()
-        return {
-            'success': 1,
-            'message': "Success",
-            'zalo_user_id': user_id,
-        }
+    def get_delare_buttons(self, user_id):
+        return [
+            {
+                "title": "Đăng ký tờ khai y tế dành cho người dân",
+                "payload": {
+                    "url": f"https://kiemdich.binhphuoc.gov.vn/#/to-khai-y-te/0/{user_id}"
+                },
+                "type": "oa.open.url"
+            },
+            {
+                "title": "Đăng ký tờ khai y tế dành cho tài xế",
+                "payload": {
+                    "url": f"https://kiemdich.binhphuoc.gov.vn/#/to-khai-y-te/0/{user_id}"
+                },
+                "type": "oa.open.url"
+            }
+        ]
     
     def send_confirm_message(self, user_id, datas):
         phone = datas.get('phone', "Chưa xác định")
@@ -90,9 +80,6 @@ Hãy nhấn vào nút bên dưới khi đã đến địa điểm của bạn!""
             }
 
     def send_checker_confirm(self, user_id, message):
-        # response = requests.get(message)
-        # if response.ok:
-        #     data = response.json()
         buttons = [
             {
                 "title": "Từ chối",
@@ -116,69 +103,57 @@ Hãy nhấn vào nút bên dưới khi đã đến địa điểm của bạn!""
     def action_by_event(self, event_name, datas):
         if event_name == 'follow':
             user_id = datas['follower']['id']
-            # text = "Đăng ký khai báo Online"
-            buttons = [
-                {
-                    "title": "Đăng ký tờ khai y tế người dân Online",
-                    "payload": {
-                        "url": f"https://kiemdich.binhphuoc.gov.vn/#/to-khai-y-te/0/{user_id}"
-                    },
-                    "type": "oa.open.url"
-                },
-                {
-                    "title": "Đăng ký tờ khai y tế vận tải Online",
-                    "payload": {
-                        "url": f"https://kiemdich.binhphuoc.gov.vn/#/to-khai-y-te/0/{user_id}"
-                    },
-                    "type": "oa.open.url"
-                }
-            ]
+            text = "Hãy chọn tờ khai y tế phù hợp với bạn"
+            buttons = self.get_delare_buttons(user_id)
 
-            return self.z_sdk.post_button_message(user_id, buttons=buttons)
+            return self.z_sdk.post_button_message(user_id, text=text, buttons=buttons)
         
         if event_name == "user_submit_info":
             user_id = datas['sender']['id']
-            info = datas['info']
-            # self.store_user_info(user_id, **info)
-            return self.z_sdk.send_attachment_message(user_id, title=self.title)
+            info = datas.get('info')
+            if info:
+                #TODO: Send user_id and phone to server
+                message = self.get_user_detail_message(info)
+            else:
+                message = f"Bạn chưa cung cấp đầy đủ thông tin, vui lòng thực hiện lại"
+        
+            return self.z_sdk.post_message(user_id, message=message)
 
         if event_name == "oa_send_text":
             user_id = datas['recipient']['id']
             message = datas['message']['text']
+
+            # Xác nhận vị trí
             if "#xacnhanvitri" in message:
                 title = "Xác nhận vị trí hiện tại của bạn"
                 subtitle = "Cung cấp vị trí hiện tại của bạn cho BCĐ phòng chống dịch Covid-19 tỉnh Bình Phước"
                 url = f"https://vnptbp-services.herokuapp.com/location/{user_id}"
                 return self.z_sdk.post_banner_message(user_id, title=title, subtitle=subtitle, url=url)
+            # Khai báo Online
             if "#khaibaoonline" in message:
                 text = "Hãy chọn tờ khai y tế phù hợp với bạn"
-                buttons = [
-                    {
-                        "title": "Đăng ký tờ khai y tế dành cho người dân",
-                        "payload": {
-                            "url": f"https://kiemdich.binhphuoc.gov.vn/#/to-khai-y-te/0/{user_id}"
-                        },
-                        "type": "oa.open.url"
-                    },
-                    {
-                        "title": "Đăng ký tờ khai y tế dành cho tài xế",
-                        "payload": {
-                            "url": f"https://kiemdich.binhphuoc.gov.vn/#/to-khai-y-te/0/{user_id}"
-                        },
-                        "type": "oa.open.url"
-                    }
-                ]
+                buttons = self.get_delare_buttons(user_id)
                 return self.z_sdk.post_button_message(user_id, text=text, buttons=buttons)
-        
+
+            if "#dangkyquanly" in message:
+                title = "Đăng ký tài khoản cấp Quản lý"
+                subtitle = "Hãy cung cấp thông tin cá nhân theo mẫu để tiến hành đăng ký cấp Quản lý"
+                user_response = self.z_sdk.get_profile(user_id)
+
+                if user_response['success']:
+                    res_data = user_response.get('res_data')
+                    shared_info = res_data['data'].get('shared_info')
+                    if shared_info:
+                        #TODO: Send user_id and phone to server
+                        message = self.get_user_detail_message(shared_info)
+                        return self.z_sdk.post_message(user_id, message=message)
+                return self.z_sdk.request_user_info(user_id, title=title, subtitle=subtitle)
+
         if event_name == "user_send_text":
             user_id = datas['sender']['id']
             message = datas['message']['text']
             
-            if "#dangkykiemsoat" in message:
-                pass
-            # if "#xacnhandaden" in message:
-            #     return self.z_sdk.post_message(user_id, f"Chào mừng đã đến nơi {user_id}")
-            if 'user_info' in message:
+            if 'TKVT_' in message:
                 return self.send_checker_confirm(user_id, message)
 
     

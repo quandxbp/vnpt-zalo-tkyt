@@ -1,4 +1,5 @@
 import requests
+import json
 from .credentials import ZALO_CRE
 
 class ZaloSDK:
@@ -18,8 +19,9 @@ class ZaloSDK:
         if response.ok:
             json_res = response.json()
             return {
-                'success': 1 if json_res['error'] > 0 else 0,
-                'message': json_res['message']
+                'success': 0 if json_res['error'] > 0 else 1,
+                'message': json_res['message'],
+                'res_data': json_res,
             }
         else:
             return {
@@ -115,7 +117,7 @@ class ZaloSDK:
                         "template_type": "request_user_info",
                         "elements": [{
                             "title": kwargs.get('title', 'Chưa xác định'),
-                            "subtitle": "Đang yêu cầu thông tin từ bạn",
+                            "subtitle": kwargs.get('subtitle', 'Chưa xác định'),
                             "image_url": kwargs.get('image_url', 'https://i.imgur.com/TVVyxKY.png'),
                         }]
                     }
@@ -124,6 +126,11 @@ class ZaloSDK:
         }
 
         response = requests.post(url, json=body, headers=self.headers)
+        return self._process_response(response)
+
+    def get_profile(self, user_id):
+        url = '%s/getprofile?data={"user_id":%s}' % (self.base_url, user_id)
+        response = requests.get(url, headers=self.headers)
         return self._process_response(response)
 
     def send_attachment_message(self, user_id, **kwargs):
@@ -147,8 +154,6 @@ class ZaloSDK:
                 }
             }
         }
-
-        print(body)
 
         response = requests.post(url, json=body, headers=self.headers)
         return self._process_response(response)
