@@ -52,17 +52,13 @@ class ZaloService:
     def send_confirm_message(self, user_id, datas):
         phone = datas.get('phone')
         name = datas.get('name')
-        # self.store_user_info(user_id, name, phone)
+        qr_image = datas.get('qr_image')
 
-        start_time = datas.get('start_time')
-        # start_location = datas.get('start_location')
-        # dest_location = datas.get('dest_location')
-
-        message = f"""Cảm ơn bạn {name} - {phone} đã khai báo tờ khai Online.
-- Ngày khởi hành: {start_time if start_time else 'Chưa xác định'}
+        text = f"""Cảm ơn bạn {name} - {phone} đã khai báo tờ khai Online.
+Đây là mã QR Code thông tin đăng ký của bạn.
 Hãy đưa thông báo này cho cán bộ tại chốt kiểm soát để xác nhận lại đăng ký."""
 
-        return self.z_sdk.post_message(user_id, message=message)
+        return self.z_sdk.send_attachment_message(user_id, text=text, url=qr_image,)
 
     def send_confirm_location_message(self, user_id, datas):
         longitude = datas['longitude']
