@@ -1,4 +1,3 @@
-from .credentials import ZALO_CRE
 from .models import ZaloUser
 from .zalo_sdk import ZaloSDK
 
@@ -12,13 +11,17 @@ class ZaloService:
 
     def __init__(self):
         self.site = self.get_site()
-        self.z_sdk = ZaloSDK(ZALO_CRE['access_token'])
+        self.z_sdk = ZaloSDK(self.get_access_token())
         self.title = "BCĐ phòng chống dịch Covid19 Bình Phước"
         self.default_qr = "https://4js.com/online_documentation/fjs-gst-2.50.02-manual-html/Images/grw_qr_code_example_width_3cm.jpg"
 
     def get_site(self):
         data = read_json(BASE_DIR / 'config.json')
         return data.get('site', CONSTANT_SITE)
+    
+    def get_access_token(self):
+        data = read_json(BASE_DIR / 'config.json')
+        return data.get('access_token', False)
     
     def set_site(self, site):
         data = read_json(BASE_DIR / 'config.json')
@@ -32,7 +35,6 @@ class ZaloService:
     def post_multiple_message(self, messages):
         for m in messages:
             response = self.z_sdk.post_message(m.get('zuser_id'), message=m.get('message'))
-            print(response)
             if not response.get('success'):
                 return {
                     'success': 0,

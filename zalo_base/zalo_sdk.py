@@ -1,6 +1,4 @@
 import requests
-import json
-from .credentials import ZALO_CRE
 
 class ZaloSDK:
 
