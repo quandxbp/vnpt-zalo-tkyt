@@ -1,8 +1,10 @@
+from requests.api import request
 from .models import ZaloUser
 from .zalo_sdk import ZaloSDK
 
 from .utils import *
 from pathlib import Path
+import requests
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 CONSTANT_SITE = "https://kiemdich.binhphuoc.gov.vn"
@@ -85,11 +87,38 @@ class ZaloService:
 Hãy đưa thông báo này cho cán bộ tại chốt kiểm soát để xác nhận lại đăng ký."""
 
         return self.z_sdk.send_attachment_message(user_id, text=text, url=qr_image,)
+    
+    def send_location_to_tkyt(self, user_id, location, is_checkin):
+        submit_location_url = 'https://api.binhphuoc.gov.vn/api/xac-nhan-thong-tin/xac-nhan-checkin-checkout'
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        body = {
+            'zalo_user_id': user_id,
+            'vi_tri': location,
+            'is_checkin': is_checkin
+        }
+        response = requests.post(submit_location_url, body=body, headers=headers)
+        if response.ok:
+            json_res = response.json()
+            return {
+                'message': json_res.get('message', ''),
+                'success': 1
+            }
+        else:
+            return {
+                'message': response.text,
+                'success': 0
+            }
 
     def send_confirm_location_message(self, user_id, datas):
+        is_checkin = datas['checkin']
         longitude = datas['longitude']
         latitude = datas['latitude']
         location = f"https://www.google.com/maps?q={latitude},{longitude}&z=14&t=m&mapclient=embed"
+        
+        response = self.send_location_to_tkyt(user_id, location, is_checkin)
+        
         message = f"""Cảm ơn đã chia sẻ vị trí hiện tại của bạn.
 - Vị trí xác định: {location}"""
         return self.z_sdk.post_message(user_id, message=message)
@@ -158,12 +187,20 @@ Hãy nhấn vào nút bên dưới khi đã đến địa điểm của bạn!""
             user_id = datas['recipient']['id']
             message = datas['message']['text']
 
-            # Xác nhận vị trí
-            if "#xacnhanvitri" in message:
+            # Xác nhận điểm đến
+            if "#xacnhandiemden" in message:
+                title = "Xác nhận vị trí hiện tại của bạn"
+                subtitle = "Cung cấp vị trí điểm đến hiện tại của bạn cho BCĐ phòng chống dịch Covid-19 tỉnh Bình Phước"
+                url = f"https://vnptbp-services.herokuapp.com/location/{user_id}?checkin=1"
+                return self.z_sdk.post_banner_message(user_id, title=title, subtitle=subtitle, url=url)
+
+            # Xác nhận điểm rời
+            if "#xacnhandiemroi" in message:
                 title = "Xác nhận vị trí hiện tại của bạn"
                 subtitle = "Cung cấp vị trí hiện tại của bạn cho BCĐ phòng chống dịch Covid-19 tỉnh Bình Phước"
-                url = f"https://vnptbp-services.herokuapp.com/location/{user_id}"
+                url = f"https://vnptbp-services.herokuapp.com/location/{user_id}?checkin=0"
                 return self.z_sdk.post_banner_message(user_id, title=title, subtitle=subtitle, url=url)
+
             # Khai báo Online
             if "#khaibaoonline" in message:
                 text = "Hãy chọn tờ khai y tế phù hợp với bạn"

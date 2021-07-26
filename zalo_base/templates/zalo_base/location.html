@@ -45,6 +45,8 @@
     </body>
 
     <script>
+        let checkin = new URLSearchParams(window.location.search).get("checkin");
+        
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function(position) {
                 if(position.coords.latitude == null){
@@ -57,9 +59,10 @@
                     var params = { 
                         'zuser_id': "{{ zuser_id }}",
                         'latitude': position.coords.latitude,
-                        'longitude': position.coords.longitude
+                        'longitude': position.coords.longitude,
+                        'checkin': checkin
                     };
-                    xhttp.open("GET", `/location_confirm?zuser_id=${params['zuser_id']}&latitude=${params['latitude']}&longitude=${params['longitude']}`);
+                    xhttp.open("GET", `/location_confirm?zuser_id=${params['zuser_id']}&latitude=${params['latitude']}&longitude=${params['longitude']}&checkin=${params['checkin']}`);
                     xhttp.send();
                 }
             }, function(error) {
