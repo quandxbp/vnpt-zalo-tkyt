@@ -207,6 +207,15 @@ Hãy nhấn vào nút bên dưới khi đã đến địa điểm của bạn!""
                 buttons = self.get_delare_buttons(user_id)
                 return self.z_sdk.post_button_message(user_id, text=text, buttons=buttons)
 
+            # Khai báo sức khỏe
+            if "#khaibaosuckhoe" in message:
+                title = "Khai báo sức khỏe hằng ngày"
+                subtitle = "Cung cấp thông tin sức khỏe của bạn cho BCĐ phòng chống dịch Covid-19 tỉnh Bình Phước"
+                url = f"https://kiemdich.binhphuoc.gov.vn/#/theo-doi-suc-khoe/khai-bao/{user_id}"
+                image_url = "https://i.imgur.com/TVVyxKY.png"
+                return self.z_sdk.post_banner_message(user_id, title=title, subtitle=subtitle, image_url=image_url, url=url)
+
+            # Đăng ký cấp quản lý
             if "#dangkyquanly" in message:
                 title = "Đăng ký tài khoản cấp Quản lý"
                 subtitle = "Hãy cung cấp thông tin cá nhân theo mẫu để tiến hành đăng ký cấp Quản lý"
