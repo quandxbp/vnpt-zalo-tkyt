@@ -233,7 +233,7 @@ Hãy nhấn vào nút bên dưới khi đã đến địa điểm của bạn!""
         }
         print(f"INFO : {submit_url} \n - DATA: {body} ")
 
-        response = requests.post(submit_url, data=body, headers=headers)
+        response = requests.post(submit_url, json=body, headers=headers)
         if response.ok:
             json_res = response.json()
             print(f"INFO : {json_res.get('message', '')} ")
@@ -267,7 +267,7 @@ Hãy nhấn vào nút bên dưới khi đã đến địa điểm của bạn!""
             'so_dien_thoai': phone,
         }
         print(f"INFO : {submit_url} \n - DATA: {body} ")
-        response = requests.post(submit_url, data=body, headers=headers)
+        response = requests.post(submit_url, json=body, headers=headers)
         if response.ok:
             json_res = response.json()
             print(f"INFO : {json_res.get('message', '')} ")
