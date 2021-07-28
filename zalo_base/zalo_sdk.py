@@ -16,6 +16,7 @@ class ZaloSDK:
     def _process_response(self, response):
         if response.ok:
             json_res = response.json()
+            print(f"INFO : {json_res['message']}" )
             return {
                 'success': 0 if json_res['error'] < 0 else 1,
                 'message': json_res['message'],

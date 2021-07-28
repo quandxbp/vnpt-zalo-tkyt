@@ -234,6 +234,7 @@ Hãy nhấn vào nút bên dưới khi đã đến địa điểm của bạn!""
         response = requests.post(submit_url, data=body, headers=headers)
         if response.ok:
             json_res = response.json()
+            print(f"INFO : {json_res.get('message', '')} ")
             return {
                 'message': json_res.get('message', ''),
                 'success': 1
@@ -266,6 +267,7 @@ Hãy nhấn vào nút bên dưới khi đã đến địa điểm của bạn!""
         response = requests.post(submit_url, data=body, headers=headers)
         if response.ok:
             json_res = response.json()
+            print(f"INFO : {json_res.get('message', '')} ")
             return {
                 'message': json_res.get('message', ''),
                 'success': 1
