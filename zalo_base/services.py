@@ -231,6 +231,8 @@ Hãy nhấn vào nút bên dưới khi đã đến địa điểm của bạn!""
             'vi_tri': location,
             'is_checkin': is_checkin
         }
+        print(f"INFO : {submit_url} \n - DATA: {body} ")
+
         response = requests.post(submit_url, data=body, headers=headers)
         if response.ok:
             json_res = response.json()
@@ -264,6 +266,7 @@ Hãy nhấn vào nút bên dưới khi đã đến địa điểm của bạn!""
             'zalo_user_id': user_id,
             'so_dien_thoai': phone,
         }
+        print(f"INFO : {submit_url} \n - DATA: {body} ")
         response = requests.post(submit_url, data=body, headers=headers)
         if response.ok:
             json_res = response.json()
