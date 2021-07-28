@@ -1,4 +1,5 @@
 from requests.api import request
+from requests.models import Response
 from .models import ZaloUser
 from .zalo_sdk import ZaloSDK
 
@@ -87,29 +88,6 @@ class ZaloService:
 Hãy đưa thông báo này cho cán bộ tại chốt kiểm soát để xác nhận lại đăng ký."""
 
         return self.z_sdk.send_attachment_message(user_id, text=text, url=qr_image,)
-    
-    def send_location_to_tkyt(self, user_id, location, is_checkin):
-        submit_location_url = 'https://api.binhphuoc.gov.vn/api/xac-nhan-thong-tin/xac-nhan-checkin-checkout'
-        headers = {
-            'Content-Type': 'application/json'
-        }
-        body = {
-            'zalo_user_id': user_id,
-            'vi_tri': location,
-            'is_checkin': is_checkin
-        }
-        response = requests.post(submit_location_url, body=body, headers=headers)
-        if response.ok:
-            json_res = response.json()
-            return {
-                'message': json_res.get('message', ''),
-                'success': 1
-            }
-        else:
-            return {
-                'message': response.text,
-                'success': 0
-            }
 
     def send_confirm_location_message(self, user_id, datas):
         is_checkin = datas['checkin']
@@ -117,6 +95,8 @@ Hãy đưa thông báo này cho cán bộ tại chốt kiểm soát để xác n
         latitude = datas['latitude']
         location = f"https://www.google.com/maps?q={latitude},{longitude}&z=14&t=m&mapclient=embed"
         
+        print(is_checkin)
+        print(location)
         response = self.send_location_to_tkyt(user_id, location, is_checkin)
         
         message = f"""Cảm ơn đã chia sẻ vị trí hiện tại của bạn.
@@ -177,6 +157,7 @@ Hãy nhấn vào nút bên dưới khi đã đến địa điểm của bạn!""
             info = datas.get('info')
             if info:
                 #TODO: Send user_id and phone to server
+                response = self.send_user_info_to_tkyt(user_id, info.get('phone'))
                 message = self.get_user_detail_message(info)
             else:
                 message = f"Bạn chưa cung cấp đầy đủ thông tin, vui lòng thực hiện lại"
@@ -222,10 +203,11 @@ Hãy nhấn vào nút bên dưới khi đã đến địa điểm của bạn!""
                 user_response = self.z_sdk.get_profile(user_id)
 
                 if user_response['success']:
-                    res_data = user_response.get('res_data')
-                    shared_info = res_data['data'].get('shared_info')
+                    zalo_response = user_response.get('zalo_response')
+                    shared_info = zalo_response['data'].get('shared_info')
                     if shared_info:
                         #TODO: Send user_id and phone to server
+                        res = self.send_user_info_to_tkyt(user_id, shared_info.get('phone'))
                         message = self.get_user_detail_message(shared_info)
                         return self.z_sdk.post_message(user_id, message=message)
                 return self.z_sdk.request_user_info(user_id, title=title, subtitle=subtitle)
@@ -239,4 +221,61 @@ Hãy nhấn vào nút bên dưới khi đã đến địa điểm của bạn!""
                 # self.scan_qr_code_for_checker(message)
                 # return self.send_checker_confirm(user_id, message)
 
+    def send_location_to_tkyt(self, user_id, location, is_checkin):
+        submit_url = 'https://api.binhphuoc.gov.vn/api/xac-nhan-thong-tin/xac-nhan-checkin-checkout'
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        body = {
+            'zalo_user_id': user_id,
+            'vi_tri': location,
+            'is_checkin': is_checkin
+        }
+        response = requests.post(submit_url, data=body, headers=headers)
+        if response.ok:
+            json_res = response.json()
+            return {
+                'message': json_res.get('message', ''),
+                'success': 1
+            }
+        else:
+            print(f"ERROR : {submit_url} \n {response.text}" )
+            return {
+                'message': response.text,
+                'success': 0
+            }
     
+    def send_user_info_to_tkyt(self, user_id, phone):
+        def parse_phone(phone):
+            if phone and isinstance(phone, int):
+                phone = str(phone)
+            if '84' in phone and phone[:2] == '84':
+                phone = phone[-8:]
+            return phone
+        
+        phone = parse_phone(phone)
+        # if phone and '84' in phone 
+        submit_url = 'https://api.binhphuoc.gov.vn/api/van-tai/dang-ky-quan-ly-zalo'
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        body = {
+            'zalo_user_id': user_id,
+            'so_dien_thoai': phone,
+        }
+        response = requests.post(submit_url, data=body, headers=headers)
+        if response.ok:
+            json_res = response.json()
+            return {
+                'message': json_res.get('message', ''),
+                'success': 1
+            }
+        else:
+            print(f"ERROR : {submit_url} \n {response.text}" )
+            return {
+                'message': response.text,
+                'success': 0
+            }
+
+
+        

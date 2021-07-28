@@ -22,6 +22,7 @@ class ZaloSDK:
                 'zalo_response': json_res,
             }
         else:
+            print(f"ERROR : {response.text}" )
             return {
                 'status_code': response.status_code,
                 'message': f"{response.text}",
